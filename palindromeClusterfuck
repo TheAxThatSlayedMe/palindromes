@@ -1,0 +1,77 @@
+#META comment for Reddit: what follows this line is a description of the problem for my coding buddies. Then there's my code, with a mixture of comments to myself (evolving on random lines as my understanding of the issue evolves) and to my coding buddies.
+
+#I'm not interested in making this code more elegant or efficient.
+#I know it's probably a mess with way too many lines of code.
+#I'm interested in understanding why things aren't working the way I expect.
+#This was a great learning experience in trying out new concepts and troubleshooting.
+#I solved a lot of problems by googling docs, trial and error, clarifying what I
+#want to do, examining steps of the code to see if they're working right, etc.
+#But I've reached a point where I'm stuck.
+#The goal is to find the highest palindrome out of the products of two-digit numbers. (Actually, three-digit, but I can scale that up later.)
+#The highest palindrome should be 9009.
+#It generates all the palindromes (and the products that surround them) just fine. But it's supposed to append them to a list,
+#and it stops appending after 676. That's waaaayyyyyyy too soon. Something goes wrong between product generation and final list creation.
+#All the palindromes that get appended are squares: 11*11=121, 22*22=484, 26*26=676.
+#The method I came up with for multiplying the numbers is this:
+#10x10 end 10 loop
+#11x10
+#11x11 end 11 loop
+#12x10
+#12x11
+#12x12 end 12 loop
+#This is where I suspect the error is occuring-- it is only returning palindromes that 
+#pop up at the very last iteration of the loop that matches the first number with all the
+#numbers it's multiplied by. So 22x22 successfully returns 484 to wherever it needs to go
+#for the final output, BUT if say 22X15 were to produce a palindrome, that wouldn't wind up
+#where it needs to be, EVEN THOUGH all products DO wind up in testList and reverseList, which
+#is where I thought my final answer was being pulled from. 
+#OK... after typing all that, I finally discovered that z and product do not match. product only contains products returned at 
+#end of the loop for each value of y.
+#The issue is probably the worst practice I used in assigning global z inside the function.
+#But this is where my knowledge of functions comes to and end. I don't see why z is fine, but saying product = z only captures
+#part of z.
+
+def mult(x): # This works with x in range(10,100) to multiply all the 2-digit numbers by each other.
+    global z
+    y = 9
+    while y < x:
+        y = y + 1
+        z = y * x
+        print('z: ', z) # GOOD, prints ALL products
+#mult()
+
+#for x in range(10,100): #This is commented out because it's part of a bigger loop below.
+   # mult()
+
+testList = []
+reverseList = []
+finalistList = []
+
+for x in range(10, 100):
+    mult(x)
+    product = z # z is assigned in mult() 
+    print('product: ', product) #AHA!!!! Here's the problem: product and z do not match. product only preserves z at end of each y loop. 
+    productToString = str(product)
+    testList = [productToString]
+    #print('testList high up: ', testList) #GOOD; prints ALL products. ACTUALLY, NO. only prints product. Couldn't tell until I labeled z separately.
+    reverseList = [productToString]
+    # print('reverseList: ', reverseList) GOOD; prints ALL products.
+    testList[0:] = testList[0] # This line is unnecessary... whoops, maybe not. Disabling it populates finalistList with some non-palindromes.
+    #print('testList: ', testList) # GOOD... but... only displays last item at this stage. So can't see if it's lost items.
+    reverseList[0:] = reverseList[0]
+    #print('reverseList: ', reverseList) #GOOD... ditto.
+    reverseList = list(reversed(testList))
+    #print('reverseList: ', reverseList) # GOOD (turn on to troubleshoot)
+    if reverseList == testList:
+        finalistList.append(product)
+        print('finalistList: ', finalistList) # Keep on in conjunction with print(z) MISSING at least 464, 696, 1881, 2772, 3663, 4554, 5445, 6336, 7227, 8118, 9009
+        # [121, 484, 676] (11*11, 22*22, 26*26)
+        # All cubes-- is something only happening at the end of the while y < x: loop?
+        # Craps out after 26*26. No more palindromes are appended after 270 (27*10). Next palindrome is 616 (
+        # Gap between 702 (27*26) and 729 (27*27).
+        # Next palindrome is 616 (28*22)
+    testList = []
+    reverseList = []
+
+print('finalistList: ', finalistList)
+print('Largest multiple of two 2-digit numbers that is a palindrome: ', finalistList[-1]) #I think there is an off-by-one error here that is DEFINITELY NOT the [-1], but I'll worry about that later.
