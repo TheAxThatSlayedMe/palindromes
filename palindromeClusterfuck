@@ -11,8 +11,8 @@
 #The highest palindrome should be 9009.
 #It generates all the palindromes (and the products that surround them) just fine. But it's supposed to append them to a list,
 #and it stops appending after 676. That's waaaayyyyyyy too soon. Something goes wrong between product generation and final list creation.
-#All the palindromes that get appended are squares: 11*11=121, 22*22=484, 26*26=676.
-#The method I came up with for multiplying the numbers is this:
+#All the palindromes that get appended are squares: 11*11=121, 22*22=484, 26*26=676. (I feel pretty smart for figuring this out.)
+#The method I came up with for multiplying the numbers is this: (Yeah I'm bragging about my method, it's probably the only clever thing in this idiotic code, except OOPS it doesn't work everywhere.)
 #10x10 end 10 loop
 #11x10
 #11x11 end 11 loop
@@ -30,6 +30,31 @@
 #The issue is probably the worst practice I used in assigning global z inside the function.
 #But this is where my knowledge of functions comes to and end. I don't see why z is fine, but saying product = z only captures
 #part of z.
+#Later edit, just before posting to r/badcode: Holy shit!! I put print(z) inside the for x loop, and z prints the same list as product!!! So maybe the issue isn't
+#in how the value of z is preserved outside the function, but in how the x and y loops interact. 
+#Well, since the y loop accepts all the x's it needs from the x loop just fine,
+#I guess the problem is in at what point the x loop loops...
+# for x in range(10,100):, so each loop is 10, then 11, then 12... corresponding to the second number that gets multiplied in the
+# while y loop... once y's value matches x, the for x loop iterates with the next value of x... or does it... let's work this out...
+# while y < 10:
+#   y = 9 + 1
+#   z = 10 * 10
+# while y < 11:
+#   y = 9 + 1
+#   z = 10 * 11
+#   y = 10 + 1
+#   z = 11 * 11
+# while y < 12:
+#   y = 9 + 1
+#   z = 10 * 12
+#   y = 10 + 1
+#   z = 11 * 12
+#   y = 11 + 1
+#   z = 12 * 12
+# So... y does its thing on x just fine. mult(x) completes when the two numbers match. And the for x loop only takes the most
+#recent value for z at the end of the function. So that's why my for x loop only works with the squares returned by the mult(x) function.
+#Cool... all I have to do is, uh... rearrange my two loops completely?
+
 
 def mult(x): # This works with x in range(10,100) to multiply all the 2-digit numbers by each other.
     global z
@@ -49,6 +74,7 @@ finalistList = []
 
 for x in range(10, 100):
     mult(x)
+    print('z in x loop: ', z) #Even though this is one of the first tests, it is the absolute last one I did, JUST NOW, and unveiled a major misconception I had about the behavior of z.
     product = z # z is assigned in mult() 
     print('product: ', product) #AHA!!!! Here's the problem: product and z do not match. product only preserves z at end of each y loop. 
     productToString = str(product)
