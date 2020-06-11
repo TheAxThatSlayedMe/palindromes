@@ -1,0 +1,32 @@
+#The problem was actually to find the highest palindrome that is a multiple of THREE numbers,
+#which this final clean version accomplishes. Hooray! I passed an Euler challenge with a
+#5% difficulty after hours of wrestling with code!
+
+testList = []
+reverseList = []
+finalistList = []
+
+def mult(x): # This works with x in range(10,100) to multiply all the 2-digit numbers by each other.
+    global z
+    y = 9
+    while y <= x:
+        y = y + 1
+        z = y * x
+        product = z # z is assigned in mult() 
+        productToString = str(product)
+        testList = [productToString]
+        reverseList = [productToString]
+        testList[0:] = testList[0] # This line is unnecessary... whoops, maybe not. Disabling it populates finalistList with some non-palindromes.
+        reverseList[0:] = reverseList[0]
+        reverseList = list(reversed(testList))
+        if reverseList == testList:
+            finalistList.append(product)
+        testList = []
+        reverseList = []
+        
+for x in range(100,1000): #This is commented out because it's part of a bigger loop below.
+   mult(x)
+
+finalistList.sort() # The answer, 90909, was wrong because by the nature of how mult(x) organizes numbers for multiplication, it created a list that was not sorted by value, causing the last position to not be the highest. This one line of code fixed it!!
+
+print('Largest multiple of two 3-digit numbers that is a palindrome: ', finalistList[-1])
