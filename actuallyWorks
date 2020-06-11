@@ -16,7 +16,7 @@ def mult(x): # This works with x in range(10,100) to multiply all the 2-digit nu
         productToString = str(product)
         testList = [productToString]
         reverseList = [productToString]
-        testList[0:] = testList[0] # This line is unnecessary... whoops, maybe not. Disabling it populates finalistList with some non-palindromes.
+        testList[0:] = testList[0] 
         reverseList[0:] = reverseList[0]
         reverseList = list(reversed(testList))
         if reverseList == testList:
