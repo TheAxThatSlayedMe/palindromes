@@ -1,0 +1,44 @@
+#Didn't clean it up. Just got it to work and shared it.
+
+testList = []
+reverseList = []
+finalistList = []
+
+def mult(x): # This works with x in range(10,100) to multiply all the 2-digit numbers by each other.
+    global z
+    y = 9
+    while y < x:
+        y = y + 1
+        z = y * x
+        #print('z: ', z) # GOOD, prints ALL products
+        product = z # z is assigned in mult() 
+        #print('product: ', product) #AHA!!!! Here's the problem: product and z do not match. product only preserves z at end of each y loop. 
+        productToString = str(product)
+        testList = [productToString]
+        #print('testList high up: ', testList) #GOOD; prints ALL products. ACTUALLY, NO. only prints product. Couldn't tell until I labeled z separately.
+        reverseList = [productToString]
+        # print('reverseList: ', reverseList) GOOD; prints ALL products.
+        testList[0:] = testList[0] # This line is unnecessary... whoops, maybe not. Disabling it populates finalistList with some non-palindromes.
+        #print('testList: ', testList) # GOOD... but... only displays last item at this stage. So can't see if it's lost items.
+        reverseList[0:] = reverseList[0]
+        #print('reverseList: ', reverseList) #GOOD... ditto.
+        reverseList = list(reversed(testList))
+        #print('reverseList: ', reverseList) # GOOD (turn on to troubleshoot)
+        if reverseList == testList:
+            finalistList.append(product)
+            #print('finalistList: ', finalistList) # Keep on in conjunction with print(z) MISSING at least 464, 696, 1881, 2772, 3663, 4554, 5445, 6336, 7227, 8118, 9009
+        # [121, 484, 676] (11*11, 22*22, 26*26)
+        # All cubes-- is something only happening at the end of the while y < x: loop?
+        # Craps out after 26*26. No more palindromes are appended after 270 (27*10). Next palindrome is 616 (
+        # Gap between 702 (27*26) and 729 (27*27).
+        # Next palindrome is 616 (28*22)
+        testList = []
+        reverseList = []
+
+
+for x in range(10,100): #This is commented out because it's part of a bigger loop below.
+   mult(x)
+   #print('z in x loop: ', z)
+   
+#print('finalistList: ', finalistList)
+print('Largest multiple of two 2-digit numbers that is a palindrome: ', finalistList[-1])
